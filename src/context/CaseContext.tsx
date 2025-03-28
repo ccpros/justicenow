@@ -1,41 +1,23 @@
-"use client";
+// src/context/CaseContext.tsx
+import React, { createContext, useState, ReactNode } from "react";
+import { Case } from "../types/caseTypes";
 
-import { createContext, useContext, useState, ReactNode } from "react";
-
-type CaseData = {
-  parties: any[];
-  caseDetails: any;
-  violations: string[];
-  timeline: any[];
-  relief: string[];
-};
-
-const defaultData: CaseData = {
-  parties: [],
-  caseDetails: {},
-  violations: [],
-  timeline: [],
-  relief: [],
-};
-
-const CaseContext = createContext<{
-  caseData: CaseData;
-  setCaseData: React.Dispatch<React.SetStateAction<CaseData>>;
+// Define CaseContext and type for children
+export const CaseContext = createContext<{
+  caseData: Case | null;
+  setCaseData: React.Dispatch<React.SetStateAction<Case | null>>;
 }>({
-  caseData: defaultData,
+  caseData: null,
   setCaseData: () => {},
 });
 
-export function useCase() {
-  return useContext(CaseContext);
-}
-
-export function CaseProvider({ children }: { children: ReactNode }) {
-  const [caseData, setCaseData] = useState<CaseData>(defaultData);
+// Fixing the CaseProvider to accept children as a prop
+export const CaseProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
+  const [caseData, setCaseData] = useState<Case | null>(null);
 
   return (
     <CaseContext.Provider value={{ caseData, setCaseData }}>
       {children}
     </CaseContext.Provider>
   );
-}
+};
