@@ -1,18 +1,23 @@
 // src/context/CaseContext.tsx
-import React, { createContext, useState, ReactNode } from "react";
+import React, { createContext, useState, ReactNode, useContext } from "react";
 import { Case } from "../types/caseTypes";
 
-// Define CaseContext and type for children
-export const CaseContext = createContext<{
+// Define the types for the CaseContext
+interface CaseContextType {
   caseData: Case | null;
   setCaseData: React.Dispatch<React.SetStateAction<Case | null>>;
-}>({
+}
+
+export const CaseContext = createContext<CaseContextType>({
   caseData: null,
   setCaseData: () => {},
 });
 
-// Fixing the CaseProvider to accept children as a prop
-export const CaseProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
+interface CaseProviderProps {
+  children: ReactNode;
+}
+
+export const CaseProvider: React.FC<CaseProviderProps> = ({ children }) => {
   const [caseData, setCaseData] = useState<Case | null>(null);
 
   return (
@@ -21,3 +26,6 @@ export const CaseProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     </CaseContext.Provider>
   );
 };
+
+// Define the useCase hook to access case data
+export const useCase = () => useContext(CaseContext);
