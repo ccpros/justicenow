@@ -6,7 +6,7 @@ export default function CaseBuilderPage() {
       <div className="max-w-3xl mx-auto space-y-6">
         <h1 className="text-4xl font-bold text-center">🧩 Build Your Legal Case</h1>
         <p className="text-muted-foreground text-center">
-          We'll guide you step by step through facts, violations, and legal strategy.
+        We&apos;ll guide you step by step through facts, violations, and legal strategy.
         </p>
 
         {/* Wizard will render here */}
