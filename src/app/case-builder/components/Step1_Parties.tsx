@@ -11,6 +11,7 @@ import {
   SelectContent,
   SelectItem,
 } from "@/components/ui/select";
+import { useCase } from "@/context/CaseContext";
 
 interface Party {
   name: string;
@@ -35,18 +36,26 @@ const roleOptions: Record<string, string[]> = {
 };
 
 export default function Step1_Parties() {
-  const [parties, setParties] = useState<Party[]>([]);
+  const { caseData, setCaseData } = useCase();
+const parties = caseData.parties;
+
   const [name, setName] = useState("");
   const [mainRole, setMainRole] = useState("");
   const [subRole, setSubRole] = useState("");
 
   const addParty = () => {
     if (!name || !mainRole || !subRole) return;
-    setParties([...parties, { name, role: `${mainRole} - ${subRole}` }]);
+  
+    const newParty = { name, role: `${mainRole} - ${subRole}` };
+    const updated = [...caseData.parties, newParty];
+  
+    setCaseData({ ...caseData, parties: updated });
+  
     setName("");
     setMainRole("");
     setSubRole("");
   };
+  
 
   return (
     <div className="space-y-6">

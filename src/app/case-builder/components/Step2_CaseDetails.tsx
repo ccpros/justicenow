@@ -1,12 +1,10 @@
 "use client";
 
-import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import {
-  Checkbox,
-} from "@/components/ui/checkbox";
+import { Checkbox } from "@/components/ui/checkbox";
+import { useCase } from "@/context/CaseContext";
 
 const jurisdictions = {
   "Washington State Superior Courts": [
@@ -100,23 +98,33 @@ const caseTypes = {
 };
 
 export default function Step2_CaseDetails() {
-  const [caseName, setCaseName] = useState("");
-  const [caseNumber, setCaseNumber] = useState("");
-  const [status, setStatus] = useState("");
-  const [summary, setSummary] = useState("");
-  const [selectedJurisdictions, setSelectedJurisdictions] = useState<string[]>([]);
-  const [selectedCaseTypes, setSelectedCaseTypes] = useState<string[]>([]);
+  const { caseData, setCaseData } = useCase();
+  const caseDetails = caseData.caseDetails || {};
+  const selectedCaseTypes = caseDetails.caseTypes || [];
+  const selectedJurisdictions = caseDetails.jurisdictions || [];
 
-  const toggleJurisdiction = (value: string) => {
-    setSelectedJurisdictions((prev) =>
-      prev.includes(value) ? prev.filter((v) => v !== value) : [...prev, value]
-    );
+  const updateField = (field: string, value: any) => {
+    setCaseData({
+      ...caseData,
+      caseDetails: {
+        ...caseDetails,
+        [field]: value,
+      },
+    });
   };
 
   const toggleCaseType = (value: string) => {
-    setSelectedCaseTypes((prev) =>
-      prev.includes(value) ? prev.filter((v) => v !== value) : [...prev, value]
-    );
+    const updated = selectedCaseTypes.includes(value)
+      ? selectedCaseTypes.filter((v) => v !== value)
+      : [...selectedCaseTypes, value];
+    updateField("caseTypes", updated);
+  };
+
+  const toggleJurisdiction = (value: string) => {
+    const updated = selectedJurisdictions.includes(value)
+      ? selectedJurisdictions.filter((v) => v !== value)
+      : [...selectedJurisdictions, value];
+    updateField("jurisdictions", updated);
   };
 
   return (
@@ -130,8 +138,8 @@ export default function Step2_CaseDetails() {
         <div>
           <Label>Case Name</Label>
           <Input
-            value={caseName}
-            onChange={(e) => setCaseName(e.target.value)}
+            value={caseDetails.caseName || ""}
+            onChange={(e) => updateField("caseName", e.target.value)}
             placeholder="e.g. Cornett v. Gardner"
           />
         </div>
@@ -139,8 +147,8 @@ export default function Step2_CaseDetails() {
         <div>
           <Label>Case Number</Label>
           <Input
-            value={caseNumber}
-            onChange={(e) => setCaseNumber(e.target.value)}
+            value={caseDetails.caseNumber || ""}
+            onChange={(e) => updateField("caseNumber", e.target.value)}
             placeholder="e.g. 23-3-00527-34"
           />
         </div>
@@ -148,8 +156,8 @@ export default function Step2_CaseDetails() {
         <div>
           <Label>Case Status</Label>
           <Input
-            value={status}
-            onChange={(e) => setStatus(e.target.value)}
+            value={caseDetails.status || ""}
+            onChange={(e) => updateField("status", e.target.value)}
             placeholder="e.g. Open, Pending, Dismissed"
           />
         </div>
@@ -208,8 +216,8 @@ export default function Step2_CaseDetails() {
       <div>
         <Label>Brief Summary</Label>
         <Textarea
-          value={summary}
-          onChange={(e) => setSummary(e.target.value)}
+          value={caseDetails.summary || ""}
+          onChange={(e) => updateField("summary", e.target.value)}
           placeholder="Describe what happened in a few sentences..."
         />
       </div>

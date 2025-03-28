@@ -1,7 +1,9 @@
 "use client";
 
 import { useState } from "react";
-
+import { saveCaseData } from "@/lib/saveCase";
+import { Button } from "@/components/ui/button";
+import { useCase } from "@/context/CaseContext";
 import { Checkbox } from "@/components/ui/checkbox";
 
 const reliefOptions = {
@@ -34,12 +36,34 @@ const reliefOptions = {
 };
 
 export default function Step5_Relief() {
-  const [selectedRelief, setSelectedRelief] = useState<string[]>([]);
+  const { caseData, setCaseData } = useCase();
+  const selectedRelief = caseData.relief || [];
+  const [saved, setSaved] = useState(false);
+  const [error, setError] = useState("");
+
+  const handleSave = async () => {
+    try {
+      const res = await fetch("/api/save-case", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(caseData),
+      });
+  
+      const json = await res.json();
+      if (!res.ok) throw new Error(json.error || "Unknown error");
+  
+      alert(`✅ Case saved! ID: ${json.id}`);
+    } catch (err: any) {
+      alert(`❌ Failed to save case: ${err.message}`);
+    }
+  };
+  
 
   const toggleRelief = (value: string) => {
-    setSelectedRelief((prev) =>
-      prev.includes(value) ? prev.filter((v) => v !== value) : [...prev, value]
-    );
+    const updated = selectedRelief.includes(value)
+      ? selectedRelief.filter((v) => v !== value)
+      : [...selectedRelief, value];
+    setCaseData({ ...caseData, relief: updated });
   };
 
   return (
@@ -70,6 +94,21 @@ export default function Step5_Relief() {
           </div>
         ))}
       </div>
+
+      <Button onClick={handleSave} className="mt-4">
+        Save My Case
+      </Button>
+
+      {saved && (
+        <p className="text-green-600 font-medium pt-4">
+          ✅ Case saved successfully!
+        </p>
+      )}
+      {error && (
+        <p className="text-red-600 font-medium pt-4">
+          ❌ {error}
+        </p>
+      )}
     </div>
   );
 }

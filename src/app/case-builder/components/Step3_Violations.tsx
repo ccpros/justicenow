@@ -1,8 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useCase } from "@/context/CaseContext";
 import { Checkbox } from "@/components/ui/checkbox";
-
 
 const violations = {
   "Civil Law Violations": [
@@ -47,12 +46,14 @@ const violations = {
 };
 
 export default function Step3_Violations() {
-  const [selectedViolations, setSelectedViolations] = useState<string[]>([]);
+  const { caseData, setCaseData } = useCase();
+  const selectedViolations = caseData.violations || [];
 
   const toggleViolation = (value: string) => {
-    setSelectedViolations((prev) =>
-      prev.includes(value) ? prev.filter((v) => v !== value) : [...prev, value]
-    );
+    const updated = selectedViolations.includes(value)
+      ? selectedViolations.filter((v) => v !== value)
+      : [...selectedViolations, value];
+    setCaseData({ ...caseData, violations: updated });
   };
 
   return (

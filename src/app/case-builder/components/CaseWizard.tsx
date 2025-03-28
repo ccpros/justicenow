@@ -14,25 +14,25 @@ export default function CaseWizard() {
   const back = () => setStep((prev) => Math.max(prev - 1, 1));
 
   return (
-    <div>
+    <div className="max-w-4xl mx-auto p-4 space-y-8">
       {step === 1 && <Step1_Parties />}
       {step === 2 && <Step2_CaseDetails />}
       {step === 3 && <Step3_Violations />}
       {step === 4 && <Step4_Timeline />}
       {step === 5 && <Step5_Relief />}
 
-      <div className="mt-6 flex justify-between">
+      <div className="flex justify-between pt-4">
         <button
           onClick={back}
           disabled={step === 1}
-          className="text-muted-foreground hover:text-foreground"
+          className="px-4 py-2 bg-muted text-sm rounded hover:bg-muted/60 disabled:opacity-50"
         >
           ◀ Back
         </button>
         <button
           onClick={next}
           disabled={step === 5}
-          className="font-semibold text-blue-600 hover:text-blue-800"
+          className="px-4 py-2 bg-primary text-white text-sm rounded hover:bg-primary/80 disabled:opacity-50"
         >
           Next ▶
         </button>

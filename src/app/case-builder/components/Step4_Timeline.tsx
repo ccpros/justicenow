@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
+import { useCase } from "@/context/CaseContext";
 
 interface TimelineEvent {
   date: string;
@@ -13,14 +14,17 @@ interface TimelineEvent {
 }
 
 export default function Step4_Timeline() {
-  const [events, setEvents] = useState<TimelineEvent[]>([]);
+  const { caseData, setCaseData } = useCase();
+  const events: TimelineEvent[] = caseData.timeline || [];
+
   const [date, setDate] = useState("");
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
 
   const addEvent = () => {
     if (!date || !title || !description) return;
-    setEvents([...events, { date, title, description }]);
+    const newEvent = { date, title, description };
+    setCaseData({ ...caseData, timeline: [...events, newEvent] });
     setDate("");
     setTitle("");
     setDescription("");
