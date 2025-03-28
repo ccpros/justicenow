@@ -1,10 +1,5 @@
-// src/app/case-builder/components/Step5_Relief.tsx
-
-import { Checkbox } from "@/components/ui/checkbox";
 import { useCase } from "@/context/CaseContext";
-
-// Define types for the relief options
-type ReliefOption = string; // You can replace `string` with the actual type if needed
+import { Checkbox } from "@/components/ui/checkbox";
 
 const reliefOptions = {
   "Injunctive / Emergency Relief": [
@@ -35,16 +30,26 @@ const reliefOptions = {
   ]
 };
 
-
 export default function Step5_Relief() {
-  
   const { caseData, setCaseData } = useCase();
   const selectedRelief = caseData?.relief || [];
 
   const toggleRelief = (value: string) => {
     const updated = selectedRelief.includes(value)
-      ? selectedRelief.filter((v) => v !== value)
+      ? selectedRelief.filter((v: string) => v !== value)
       : [...selectedRelief, value];
+
+    setCaseData({
+      ...caseData,
+      relief: updated,
+      caseName: caseData?.caseName || "",  // Default to empty string if undefined
+      caseNumber: caseData?.caseNumber || "",  // Default to empty string if undefined
+      status: caseData?.status || "",  // Default to empty string if undefined
+      parties: caseData?.parties || [],  // Default to empty array if undefined
+      violations: caseData?.violations || [],  // Default to empty array if undefined
+      timeline: caseData?.timeline || []  // Default to empty array if undefined
+    });
+  };
 
   return (
     <div className="space-y-6">
@@ -54,7 +59,7 @@ export default function Step5_Relief() {
           <div key={group}>
             <h4 className="text-sm font-semibold mb-2">{group}</h4>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-              {items.map((item: ReliefOption) => (
+              {items.map((item: string) => (
                 <label key={item} className="flex items-center space-x-2 text-sm cursor-pointer">
                   <Checkbox
                     checked={selectedRelief.includes(item)}
@@ -69,4 +74,4 @@ export default function Step5_Relief() {
       </div>
     </div>
   );
-}}
+}

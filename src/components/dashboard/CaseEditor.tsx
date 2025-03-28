@@ -28,15 +28,17 @@ export default function CaseEditor({ id }: { id: string }) {
   };
 
   const handleSave = async () => {
-    const res = await fetch(`/api/case/${id}`, {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(caseData),
-    });
-    if (!res.ok) return alert("❌ Failed to save changes");
-    alert("✅ Case updated!");
+    // Example: Collecting all updated data
+    const updatedCaseData = {
+      ...caseData,
+      caseName: caseData?.caseName || "",  // Ensure caseName is updated
+      caseNumber: caseData?.caseNumber || "",  // Ensure caseNumber is updated
+      status: caseData?.status || "",  // Ensure status is updated
+    };
+  
+    // Save updated case data
+    setCaseData(updatedCaseData);
   };
-
   if (loading || !caseData) return <p>Loading case data...</p>;
 
   const { caseDetails, parties = [], violations = [], timeline = [], relief = [] } = caseData;
